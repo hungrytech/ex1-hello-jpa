@@ -1,5 +1,9 @@
 package hello.jpa;
 
+import JoinStrategy.Book;
+import JoinStrategy.Item;
+import JoinStrategy.Movie;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -16,26 +20,30 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         try {
-            // insert 즉 영속성 컨텍스트에 1차캐시에 등록
-            //영속성 컨텍스트의 지연 sql 저장소에 쿼리를 만들어 저장해놓는다.
-            Member member = new Member();
-            member.setId(32);
-            member.setName("member32");
+            //movie 객체를 주입.
+            Movie movie = new Movie();
+            movie.setActor("바람");
+            movie.setDirector("대머리남자");
+            movie.setName("헤븐즈필");
+            movie.setPrice(10000);
 
-            em.persist(member);
-
-
-            //변동감지
-            Member findMember = em.find(Member.class,200L);
-            findMember.setName("HODFJDO");
+            em.persist(movie);
 
 
+            Book book = new Book();
+            book.setAuthor("택민");
+            book.setIsbn("IF42-3242-3F23");
+            book.setPrice(12000);
+            book.setName("배고픈태크");
+            em.persist(book);
+            Item findBook = em.find(Book.class, 2L);
+            System.out.printf("ItemName: %s\n", findBook.getName());
 
-            // flush와 commit 같이한다.
+
             tx.commit();
-        }catch (Exception e) {
+        } catch (Exception e) {
             tx.rollback();
-        }finally {
+        } finally {
             em.close(); // 꼭 EntitiyManger 닫아줘야 한다.
         }
         emf.close();
